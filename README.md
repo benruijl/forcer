@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/89211508.svg)](https://zenodo.org/badge/latestdoi/89211508)
+
 # Forcer
 Forcer is a FORM program for the integration of massless four-loop propagator diagrams.
 
