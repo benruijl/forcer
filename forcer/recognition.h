@@ -184,13 +184,19 @@ ModuleOption local $vnum;
     Mnostar6,Mbustar5,Mfastar2,Mfastar3,Mt1star05,Mt1star24,Mt1star34,Mt1star45,Mt1star55,\
     <Md1>,...,<Md438>"
 
+#define HASANYTOPO "0"
 #do i={`TOPOS'}
-    #define HASTOPO`i' "0"
-    if (count(`i', 1)) redefine HASTOPO`i' "1";
+	#define HASTOPO`i' "0"
+	if (count(`i', 1));
+		redefine HASTOPO`i' "1";
+		redefine HASANYTOPO "1";
+	endif;
 #enddo
 
 B+ `TOPOS';
 .sort:DotRewrite-1;
+
+#if `HASANYTOPO'
 
 #do i={`TOPOS'}
 	#if `HASTOPO`i''
@@ -235,6 +241,7 @@ L `NAME' =
 
 ModuleOption noparallel;
 .sort:DotRewrite-4;
+#endif
 #endprocedure
 
 #procedure ToForcer()
