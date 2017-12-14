@@ -110,67 +110,58 @@ Argument acc;
 	Label caught;
 EndArgument;
 if ( $catch );
-	id	acc(?a) = 1;
+	id acc(?a) = 1;
 	Multiply replace(Q,Q,<$p1,p1>,...,<$p`$MAXPROPS',p`$MAXPROPS'>)*topo($toponum);
 	id	topo(n?) = topo(n,`PREFIX'tnames[n]);
 elseif ( $catch == 0 );
 	#if `WARNNOMATCH'
 		Print "WARNING: the following diagram did not match a topology: %t";
 	#endif
+	id acc(?a) = 1;
 endif;
 ModuleOption local,$catch,<$p1>,...,<$p{`$MAXPROPS'}>,$toponum;
 .sort:recognition-2a;
 id	replace(?a) = replace_(?a); * this will cause merges
+B+ topo,v,ex;
 .sort:recognition-2b;
+Keep brackets;
 
 * skip topologies that failed to match
 if (count(topo,1) == 0) goto quit;
+
+Multiply replace_(v,vy);
 
 * get a copy of reference topology to fix the signs
 #do i=1,`$numtopo'
 	id topo(`i',n?) = topo(`i',n)*$topofull`i'*ID($topoID`i');
 #enddo
 id ID(0) = 1;
-
-id	acc(x?) = x;
-
-Multiply replace_(EX,ex,v,vy);
-id	ex(?a) = 1;
+Multiply replace_(EX,ex);
+id ex(?a) = 1;
 
 * label every vertex and strip signs off a copy
-$vnum = 0;
-repeat;
-	id once vy(p?,?a) = vy($vnum,p,?a)*vz($vnum,p,?a); * input
-	id once vx(p?,?a) = vx($vnum,p,?a)*vxc($vnum,p,?a); * notation
-	repeat id vz(?a,-p?vector_,?b) = vz(?a,p,?b);
-	repeat id vxc(?a,-p?vector_,?b) = vxc(?a,p,?b);
-	$vnum = $vnum + 1;
-endrepeat;
+Multiply acc(1);
+repeat id vy(p?,?a)*acc(n?) = vy(n,p,?a)*vz(n,p,?a)*acc(n+1); * input
+repeat id vx(p?,?a)*acc(n?) = vx(n,p,?a)*vxc(n,p,?a)*acc(n+1); * notation
+repeat id vz(?a,-p?vector_,?b) = vz(?a,p,?b);
+repeat id vxc(?a,-p?vector_,?b) = vxc(?a,p,?b);
+id acc(n?) = 1;
 
 Symmetrize vz;
 Symmetrize vxc;
 
 * match vertices in notation file to the input
-repeat;
-	id once vz(n1?,?a)*vxc(n2?,?a)*vy(n1?,?b)*vx(n2?,?c) = vy($vnum,?b)*vx($vnum,?c);
-	$vnum = $vnum + 1;
-endrepeat;
-
+repeat id vz(n1?,?a)*vxc(n2?,?a)*vy(n1?,?b)*vx(n2?,?c) = vy(n1,?b)*vx(n1,?c);
 repeat id vy(n1?,?b,p?,?c)*vx(n1?,?d,-p?,?e) = vy(n1,?b,p,?c)*vx(n1,?d,?e)*replace(p);
-
-repeat id replace(-p?vector_) = replace(p);
-id replace(p?)*replace(p?) = replace_(p,-p);
 id vx(?a) = 1;
-id vx(?a) = 1;
-Multiply replace_(vy,vx);
-id vx(x?,?a) = vx(?a);
+id vy(n?,?a) = vx(?a);
+id replace(-p?vector_) = replace(p);
 
 label quit;
-id acc(?a) = 1;
+.sort:set signs-1;
+id replace(p?)*replace(p?) = replace_(p,-p);
 Multiply replace_(v,vx);
-
-ModuleOption local $vnum;
-.sort:set signs 2;
+.sort:set signs-2;
 #endprocedure
 
 #procedure DotRewrite(DOTS)
