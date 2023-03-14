@@ -142,7 +142,7 @@ NTable,sparse,OneFill,`PREFIX'dotmaptabl(2);
 
     #do toponame={`?topolist'}
       #if `HASTOPO`toponame''
-        L `NAME'`toponame' = `NAME'[M`toponame'] * M`toponame';
+        L [`NAME'`toponame'] = `NAME'[M`toponame'] * M`toponame';
 #ifdef `FORCERSTATS'
 *       NOTE: Computing the complexity of integrals based on the difference of
 *       indices to Z(1,...,1,0,...,0) requires information of each topology (the
@@ -166,7 +166,7 @@ NTable,sparse,OneFill,`PREFIX'dotmaptabl(2);
         ModuleOption noparallel;
         .sort:begin `toponame';
 #ifdef `ALLTIMING'
-        #$`oldn' = termsin_(`NAME'`toponame');
+        #$`oldn' = termsin_([`NAME'`toponame']);
 #endif
 #ifdef `FORCERSTATS'
         #if `$`prefix'minindex' != 9999
@@ -180,11 +180,11 @@ NTable,sparse,OneFill,`PREFIX'dotmaptabl(2);
       #endif
       #call AfterReduce(`toponame')
       #if `HASTOPO`toponame''
-        Hide `NAME'`toponame';
+        Hide [`NAME'`toponame'];
         #redefine processedtopolist "`processedtopolist',`toponame'"
 #ifdef `ALLTIMING'
       #if `timer_' >= `MINTIME'
-        #$`n' = termsin_(`NAME'`toponame');
+        #$`n' = termsin_([`NAME'`toponame']);
         #write <`NAME'.time> "\t {`timer_'/1000} sec. spent reducing `toponame' (`$`oldn'' -> `$`n'' terms)"
       #endif
       #reset timer
@@ -199,18 +199,18 @@ NTable,sparse,OneFill,`PREFIX'dotmaptabl(2);
       `NAME',
       #do toponame={`processedtopolist'}
         #ifdef `toponame'
-          `NAME'`toponame',
+          [`NAME'`toponame'],
         #endif
       #enddo
     ;
-    L `NAME'tmp = `NAME'[1]
+    L [`NAME'tmp] = `NAME'[1]
       #do toponame={`processedtopolist'}
         #ifdef `toponame'
-          + `NAME'`toponame'
+          + [`NAME'`toponame']
         #endif
       #enddo
     ;
-    #exchange `NAME',`NAME'tmp
+    #exchange `NAME',[`NAME'tmp]
     AB+ rat;
     ModuleOption noparallel;
     .sort:term merge with `nedge' edges;
