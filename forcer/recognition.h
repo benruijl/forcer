@@ -74,6 +74,9 @@ Drop `PREFIX'notation;
 	#write "Error: call loadTopopologies first."
 #endif
 
+* remove 2-point vertices
+id vx(p1?,p2?) = replace_(p1,-p2);
+
 * remove signs from topologies to be matched
 Multiply acc(1);
 repeat id vx(?a) = v(?a)*acc(vx(?a));
