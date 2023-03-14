@@ -314,9 +314,9 @@ endrepeat;
 *   if we know the name of the input, merge all expressions
     .sort:Merge spectator `TOPO';
     #ifdef `NAME'
-      Drop `NAME'`TOPO',F`TOPO'res;
-      L `NAME'tmp = `NAME'`TOPO' + F`TOPO'res;
-      #exchange `NAME'`TOPO',`NAME'tmp
+      Drop [`NAME'`TOPO'],F`TOPO'res;
+      L [`NAME'tmp] = [`NAME'`TOPO'] + F`TOPO'res;
+      #exchange [`NAME'`TOPO'],[`NAME'tmp]
       ModuleOption noparallel;
       .sort:spectator merge `TOPO';
     #endif
@@ -4631,7 +4631,7 @@ label 2;
 * the non-integer parts of indices are understood by `TOPO'.
 *
 * NOTE: Because of the current usage of spectators, the active expression must
-*       have a name `NAME'`TOPO'.
+*       have a name [`NAME'`TOPO'].
 *
 #procedure ReduceImpl2(TOPO,Z,N)
   #define Y "Y"
@@ -4654,11 +4654,11 @@ label 2;
   #endswitch
 #ifndef `NOSPECTATORS'
   .sort:`TOPO'-pre_from_spectator;
-  #call FromSpectator(x`TOPO',`NAME'`TOPO'res,`NAME'`TOPO'res,`Y')
+  #call FromSpectator(x`TOPO',[`NAME'`TOPO']res,[`NAME'`TOPO']res,`Y')
   .sort:`TOPO'-from_spectator;
-  Drop `NAME'`TOPO',`NAME'`TOPO'res;
-  L `NAME'tmp = `NAME'`TOPO' + `NAME'`TOPO'res;
-  #exchange `NAME'`TOPO',`NAME'tmp
+  Drop [`NAME'`TOPO'],[`NAME'`TOPO']res;
+  L [`NAME'tmp] = [`NAME'`TOPO'] + [`NAME'`TOPO']res;
+  #exchange [`NAME'`TOPO'],[`NAME'tmp]
   ModuleOption noparallel;
   .sort:`TOPO'-merge_spectator;
 #endif
